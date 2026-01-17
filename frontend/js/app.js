@@ -1,8 +1,10 @@
 const App = {
     state: {
         clientes: [],
+        clientesFiltrados: [],
         view: 'clientes', // clientes, nuevo-cliente
         filtro: { nombre: '', telefono: '' },
+        ordenamiento: 'nombre-asc', // nombre-asc, nombre-desc, telefono-asc, telefono-desc
         editingContactoId: null
     },
 
@@ -126,6 +128,7 @@ const App = {
         try {
             const clientes = await API.get('clientes');
             this.state.clientes = clientes;
+            this.aplicarFiltrosYOrdenamiento();
             this.render();
         } catch (error) {
             this.Modal.error('Error al cargar clientes');
@@ -154,27 +157,43 @@ const App = {
     },
 
     renderClientesView() {
+        const hayClientes = this.state.clientesFiltrados.length > 0;
+
         return `
-            <div class="search-bar" style="margin-bottom: 2rem; display: flex; gap: 1rem;">
+            <div class="search-bar" style="margin-bottom: 2rem; display: flex; gap: 1rem; align-items: center;">
                 <input type="text" id="busqueda-nombre" placeholder="Buscar por nombre..." class="form-control" value="${this.state.filtro.nombre}">
                 <input type="text" id="busqueda-telefono" placeholder="Buscar por teléfono..." class="form-control" oninput="App.soloNumeros(event)" value="${this.state.filtro.telefono}">
-                <button onclick="App.buscar()" class="btn-primary" style="width: auto; margin: 0;">Buscar</button>
+                <select id="ordenamiento" class="form-control" style="width: 200px;">
+                    <option value="nombre-asc" ${this.state.ordenamiento === 'nombre-asc' ? 'selected' : ''}>Nombre A-Z</option>
+                    <option value="nombre-desc" ${this.state.ordenamiento === 'nombre-desc' ? 'selected' : ''}>Nombre Z-A</option>
+                    <option value="telefono-asc" ${this.state.ordenamiento === 'telefono-asc' ? 'selected' : ''}>Teléfono Ascendente</option>
+                    <option value="telefono-desc" ${this.state.ordenamiento === 'telefono-desc' ? 'selected' : ''}>Teléfono Descendente</option>
+                </select>
             </div>
-            <div class="grid-container">
-                ${this.state.clientes.map(cliente => `
-                    <div class="card" onclick="App.editarCliente(${cliente.id})" style="cursor: pointer;">
-                        <div class="card-header">
-                            <div class="card-title">${cliente.nombreCompleto}</div>
-                            <div class="card-actions" onclick="event.stopPropagation()">
-                                <button onclick="App.verContactos(${cliente.id})" title="Ver Contactos"><i class="fa-solid fa-address-book"></i></button>
-                                <button onclick="App.eliminarCliente(${cliente.id})" class="delete-btn" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">${this.state.clientesFiltrados.length} cliente(s) encontrado(s)</p>
+            ${hayClientes ? `
+                <div class="grid-container">
+                    ${this.state.clientesFiltrados.map(cliente => `
+                        <div class="card" onclick="App.editarCliente(${cliente.id})" style="cursor: pointer;">
+                            <div class="card-header">
+                                <div class="card-title">${cliente.nombreCompleto}</div>
+                                <div class="card-actions" onclick="event.stopPropagation()">
+                                    <button onclick="App.verContactos(${cliente.id})" title="Ver Contactos"><i class="fa-solid fa-address-book"></i></button>
+                                    <button onclick="App.eliminarCliente(${cliente.id})" class="delete-btn" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                                </div>
                             </div>
+                            <p style="color: var(--text-muted); margin-bottom: 0.5rem;"><i class="fa-solid fa-phone"></i> ${cliente.telefono || 'Sin teléfono'}</p>
+                            <p style="color: var(--text-muted);"><i class="fa-solid fa-location-dot"></i> ${cliente.direccion || 'Sin dirección'}</p>
                         </div>
-                        <p style="color: var(--text-muted); margin-bottom: 0.5rem;"><i class="fa-solid fa-phone"></i> ${cliente.telefono || 'Sin teléfono'}</p>
-                        <p style="color: var(--text-muted);"><i class="fa-solid fa-location-dot"></i> ${cliente.direccion || 'Sin dirección'}</p>
-                    </div>
-                `).join('')}
-            </div>
+                    `).join('')}
+                </div>
+            ` : `
+                <div style="text-align: center; padding: 4rem 2rem; color: var(--text-muted);">
+                    <i class="fa-solid fa-users-slash" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                    <h3 style="color: var(--text-main); margin-bottom: 0.5rem;">No se encontraron clientes</h3>
+                    <p>Intenta ajustar tus filtros de búsqueda o agrega un nuevo cliente.</p>
+                </div>
+            `}
         `;
     },
 
@@ -201,19 +220,78 @@ const App = {
     },
 
     setupBusqueda() {
-        // Simple manual wiring if needed
+        const inputNombre = document.getElementById('busqueda-nombre');
+        const inputTelefono = document.getElementById('busqueda-telefono');
+        const selectOrdenamiento = document.getElementById('ordenamiento');
+
+        if (inputNombre) {
+            inputNombre.addEventListener('input', (e) => {
+                this.state.filtro.nombre = e.target.value;
+                this.aplicarFiltrosYOrdenamiento();
+                this.actualizarVista();
+            });
+        }
+
+        if (inputTelefono) {
+            inputTelefono.addEventListener('input', (e) => {
+                this.state.filtro.telefono = e.target.value;
+                this.aplicarFiltrosYOrdenamiento();
+                this.actualizarVista();
+            });
+        }
+
+        if (selectOrdenamiento) {
+            selectOrdenamiento.addEventListener('change', (e) => {
+                this.state.ordenamiento = e.target.value;
+                this.aplicarFiltrosYOrdenamiento();
+                this.actualizarVista();
+            });
+        }
     },
 
-    async buscar() {
-        const nombre = document.getElementById('busqueda-nombre').value;
-        const telefono = document.getElementById('busqueda-telefono').value;
+    aplicarFiltrosYOrdenamiento() {
+        let clientesFiltrados = [...this.state.clientes];
 
-        try {
-            const clientes = await API.get(`clientes/buscar?nombre=${nombre}&telefono=${telefono}`);
-            this.state.clientes = clientes;
-            this.render(); // Re-render grid only preferably, but full render is easier
-        } catch (e) {
-            console.error(e);
+        // Aplicar filtro por nombre
+        if (this.state.filtro.nombre) {
+            const nombreBusqueda = this.state.filtro.nombre.toLowerCase();
+            clientesFiltrados = clientesFiltrados.filter(cliente =>
+                cliente.nombreCompleto.toLowerCase().includes(nombreBusqueda)
+            );
+        }
+
+        // Aplicar filtro por teléfono
+        if (this.state.filtro.telefono) {
+            clientesFiltrados = clientesFiltrados.filter(cliente =>
+                cliente.telefono && cliente.telefono.includes(this.state.filtro.telefono)
+            );
+        }
+
+        // Aplicar ordenamiento
+        clientesFiltrados.sort((a, b) => {
+            switch (this.state.ordenamiento) {
+                case 'nombre-asc':
+                    return a.nombreCompleto.localeCompare(b.nombreCompleto);
+                case 'nombre-desc':
+                    return b.nombreCompleto.localeCompare(a.nombreCompleto);
+                case 'telefono-asc':
+                    return (a.telefono || '').localeCompare(b.telefono || '');
+                case 'telefono-desc':
+                    return (b.telefono || '').localeCompare(a.telefono || '');
+                default:
+                    return 0;
+            }
+        });
+
+        this.state.clientesFiltrados = clientesFiltrados;
+    },
+
+    actualizarVista() {
+        // Solo actualizar la vista sin recargar todo
+        const contentArea = document.getElementById('content-area');
+        if (this.state.view === 'clientes') {
+            contentArea.innerHTML = this.renderClientesView();
+            this.setupBusqueda();
         }
     },
 
