@@ -15,4 +15,9 @@ RUN dotnet publish "api_back.csproj" -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+# Render usa el puerto 10000 (pero se puede configurar con ENV variable PORT)
+EXPOSE 10000
+ENV ASPNETCORE_URLS=http://+:10000
+
 ENTRYPOINT ["dotnet", "api_back.dll"]
