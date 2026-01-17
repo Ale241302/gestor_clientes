@@ -269,6 +269,18 @@ body {
     text-align: center;
 }
 
+#generic-modal-actions {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+#generic-modal-actions button {
+    flex: 1;
+    margin-top: 0;
+}
+
 .close-modal {
     position: absolute;
     top: 2vh;
