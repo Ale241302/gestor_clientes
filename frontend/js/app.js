@@ -6,6 +6,41 @@ const App = {
         editingContactoId: null
     },
 
+    Theme: {
+        init() {
+            // Check local storage or system preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                this.setTheme(savedTheme);
+            } else {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                this.setTheme(prefersDark ? 'dark' : 'light');
+            }
+
+            // Listen for system changes
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (!localStorage.getItem('theme')) {
+                    this.setTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+        },
+
+        toggle() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            this.setTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        },
+
+        setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const icon = document.querySelector('#theme-toggle i');
+            if (icon) {
+                icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+        }
+    },
+
     Modal: {
         show(title, message, type = 'info', onConfirm = null) {
             const modal = document.getElementById('generic-modal');
@@ -82,6 +117,7 @@ const App = {
 
     async init() {
         console.log('App iniciada');
+        this.Theme.init();
         this.render();
         await this.cargarClientes();
     },
