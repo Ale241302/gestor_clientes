@@ -2,7 +2,8 @@ const App = {
     state: {
         clientes: [],
         view: 'clientes', // clientes, nuevo-cliente
-        filtro: { nombre: '', telefono: '' }
+        filtro: { nombre: '', telefono: '' },
+        editingContactoId: null
     },
 
     Modal: {
@@ -260,45 +261,80 @@ const App = {
         const modal = document.getElementById('modal');
         const modalBody = document.getElementById('modal-body');
 
+        // Reset editing state when opening
+        this.state.editingContactoId = null;
+
         modalBody.innerHTML = `
-            <h2 style="margin-bottom: 1rem;">Contactos del Cliente</h2>
-            <div style="max-height: 40vh; overflow-y: auto; margin-bottom: 2rem;">
+            <h2 style="margin-bottom: 1.5rem;">Contactos del Cliente</h2>
+            <div id="contactos-list" style="max-height: 40vh; overflow-y: auto; margin-bottom: 2.5rem;">
                 ${contactos.length ? contactos.map(c => `
-                    <div style="background: rgba(255,255,255,0.05); padding: 1rem; margin-bottom: 0.5rem; border-radius: 8px; display: flex; justify-content: space-between;">
+                    <div style="background: rgba(255,255,255,0.05); padding: 1rem; margin-bottom: 0.8rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--glass-border);">
                         <div>
-                            <strong>${c.nombreCompleto}</strong><br>
-                            <small>${c.telefono || ''}</small>
+                            <strong style="color: var(--text-main);">${c.nombreCompleto}</strong><br>
+                            <small style="color: var(--text-muted);">${c.telefono || 'Sin teléfono'}</small>
                         </div>
-                        <button onclick="App.eliminarContacto(${c.id}, ${clienteId})" style="background:none; border:none; color: #ef4444; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button onclick="App.prepararEdicionContacto(${c.id}, ${clienteId})" style="background:none; border:none; color: var(--primary-color); cursor: pointer; font-size: 1.1rem;" title="Editar"><i class="fa-solid fa-pencil"></i></button>
+                            <button onclick="App.eliminarContacto(${c.id}, ${clienteId})" style="background:none; border:none; color: var(--danger-color); cursor: pointer; font-size: 1.1rem;" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                        </div>
                     </div>
-                `).join('') : '<p>No hay contactos.</p>'}
+                `).join('') : '<p style="text-align: center; color: var(--text-muted);">No hay contactos registrados.</p>'}
             </div>
             
-            <h3>Agregar Contacto</h3>
-            <form onsubmit="App.agregarContacto(event, ${clienteId})">
-                <input type="hidden" name="clienteId" value="${clienteId}">
+            <h3 id="form-contacto-title" style="margin-bottom: 1.5rem; color: var(--text-main);">Agregar Nuevo Contacto</h3>
+            <form id="form-contacto" onsubmit="App.procesarContacto(event, ${clienteId})">
+                <input type="hidden" name="id" id="input-contacto-id" value="">
                 <div class="form-group">
-                    <input type="text" name="nombreCompleto" placeholder="Nombre Contacto" class="form-control" required>
+                    <input type="text" name="nombreCompleto" id="input-contacto-nombre" placeholder="Nombre del Contacto" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="telefono" placeholder="Teléfono" class="form-control">
+                    <input type="text" name="telefono" id="input-contacto-telefono" placeholder="Número de Teléfono" class="form-control">
                 </div>
-                 <div class="form-group">
-                    <input type="text" name="direccion" placeholder="Dirección" class="form-control">
+                <div class="form-group">
+                    <input type="text" name="direccion" id="input-contacto-direccion" placeholder="Dirección Postal" class="form-control">
                 </div>
-                <button type="submit" class="btn-primary">Agregar</button>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" id="btn-submit-contacto" class="btn-primary" style="margin-top: 0;">Agregar Contacto</button>
+                    <button type="button" id="btn-cancelar-edicion" class="btn-secondary" style="margin-top: 0; display: none;" onclick="App.cancelarEdicionContacto(${clienteId})">Cancelar</button>
+                </div>
             </form>
         `;
 
         modal.classList.remove('hidden');
-
-        // Close handler
         document.querySelector('.close-modal').onclick = () => modal.classList.add('hidden');
     },
 
-    async agregarContacto(event, clienteId) {
+    async prepararEdicionContacto(contactoId, clienteId) {
+        try {
+            // we could fetch it, but usually it's in the list or we can fetch by id
+            const contacto = await API.get(`contactos/${contactoId}`);
+            if (!contacto) return;
+
+            this.state.editingContactoId = contactoId;
+
+            document.getElementById('form-contacto-title').textContent = 'Editar Contacto';
+            document.getElementById('btn-submit-contacto').textContent = 'Actualizar Cambios';
+            document.getElementById('btn-cancelar-edicion').style.display = 'block';
+
+            document.getElementById('input-contacto-id').value = contacto.id;
+            document.getElementById('input-contacto-nombre').value = contacto.nombreCompleto;
+            document.getElementById('input-contacto-telefono').value = contacto.telefono || '';
+            document.getElementById('input-contacto-direccion').value = contacto.direccion || '';
+
+            document.getElementById('input-contacto-nombre').focus();
+        } catch (e) {
+            this.Modal.error('Error al cargar datos del contacto');
+        }
+    },
+
+    cancelarEdicionContacto(clienteId) {
+        this.verContactos(clienteId); // Simplest way to reset everything
+    },
+
+    async procesarContacto(event, clienteId) {
         event.preventDefault();
         const formData = new FormData(event.target);
+        const id = formData.get('id');
         const data = {
             clienteId: parseInt(clienteId),
             nombreCompleto: formData.get('nombreCompleto'),
@@ -307,11 +343,17 @@ const App = {
         };
 
         try {
-            await API.post('contactos', data);
-            // Reload contacts in modal
+            if (this.state.editingContactoId) {
+                data.id = parseInt(this.state.editingContactoId);
+                await API.put(`contactos/${this.state.editingContactoId}`, data);
+                this.Modal.success('Contacto actualizado');
+            } else {
+                await API.post('contactos', data);
+                this.Modal.success('Contacto agregado');
+            }
             this.verContactos(clienteId);
         } catch (e) {
-            this.Modal.error('Error al agregar contacto');
+            this.Modal.error('Error al procesar contacto');
         }
     },
 

@@ -272,6 +272,7 @@ body {
     cursor: pointer;
 }
 
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .app-container {

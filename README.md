@@ -54,7 +54,7 @@ Aplicación web completa para la gestión de clientes y contactos, desarrollada 
 ## Documentación
 - [Backend Docs](api_back/DOCUMENTACION.md)
 - [Frontend Docs](frontend/DOCUMENTACION.md)
-- [Diagrama ER](SQL/diagrama_mer.png)
+- [Diagrama MER](SQL/diagrama_mer.png)
 
 ## Funcionalidades
 - CRUD completo de Clientes y Contactos.
