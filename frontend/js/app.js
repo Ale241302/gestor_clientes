@@ -111,10 +111,10 @@ const App = {
             </div>
             <div class="grid-container">
                 ${this.state.clientes.map(cliente => `
-                    <div class="card">
+                    <div class="card" onclick="App.editarCliente(${cliente.id})" style="cursor: pointer;">
                         <div class="card-header">
                             <div class="card-title">${cliente.nombreCompleto}</div>
-                            <div class="card-actions">
+                            <div class="card-actions" onclick="event.stopPropagation()">
                                 <button onclick="App.verContactos(${cliente.id})" title="Ver Contactos"><i class="fa-solid fa-address-book"></i></button>
                                 <button onclick="App.eliminarCliente(${cliente.id})" class="delete-btn" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
                             </div>
@@ -182,6 +182,56 @@ const App = {
             this.cargarClientes();
         } catch (e) {
             this.Modal.error('Error al guardar');
+        }
+    },
+
+    editarCliente(id) {
+        const cliente = this.state.clientes.find(c => c.id === id);
+        if (!cliente) return;
+
+        const modal = document.getElementById('modal');
+        const modalBody = document.getElementById('modal-body');
+
+        modalBody.innerHTML = `
+            <h2 style="margin-bottom: 2rem;">Editar Cliente</h2>
+            <form onsubmit="App.actualizarCliente(event, ${cliente.id})">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" name="nombreCompleto" class="form-control" value="${cliente.nombreCompleto}" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" name="telefono" class="form-control" value="${cliente.telefono || ''}">
+                </div>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <input type="text" name="direccion" class="form-control" value="${cliente.direccion || ''}">
+                </div>
+                <button type="submit" class="btn-primary">Actualizar Cliente</button>
+            </form>
+        `;
+
+        modal.classList.remove('hidden');
+        document.querySelector('.close-modal').onclick = () => modal.classList.add('hidden');
+    },
+
+    async actualizarCliente(event, id) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const data = {
+            id: id,
+            nombreCompleto: formData.get('nombreCompleto'),
+            telefono: formData.get('telefono'),
+            direccion: formData.get('direccion')
+        };
+
+        try {
+            await API.put(`clientes/${id}`, data);
+            document.getElementById('modal').classList.add('hidden');
+            this.Modal.success('Cliente actualizado correctamente');
+            this.cargarClientes();
+        } catch (e) {
+            this.Modal.error('Error al actualizar cliente');
         }
     },
 
