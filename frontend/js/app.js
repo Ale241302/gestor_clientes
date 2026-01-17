@@ -66,6 +66,11 @@ const App = {
         }
     },
 
+    soloNumeros(event) {
+        // Permitir solo números y teclas de control básicas
+        event.target.value = event.target.value.replace(/[^0-9]/g, '');
+    },
+
     async init() {
         console.log('App iniciada');
         this.render();
@@ -107,7 +112,7 @@ const App = {
         return `
             <div class="search-bar" style="margin-bottom: 2rem; display: flex; gap: 1rem;">
                 <input type="text" id="busqueda-nombre" placeholder="Buscar por nombre..." class="form-control" value="${this.state.filtro.nombre}">
-                <input type="text" id="busqueda-telefono" placeholder="Buscar por teléfono..." class="form-control" value="${this.state.filtro.telefono}">
+                <input type="text" id="busqueda-telefono" placeholder="Buscar por teléfono..." class="form-control" oninput="App.soloNumeros(event)" value="${this.state.filtro.telefono}">
                 <button onclick="App.buscar()" class="btn-primary" style="width: auto; margin: 0;">Buscar</button>
             </div>
             <div class="grid-container">
@@ -138,7 +143,7 @@ const App = {
                     </div>
                     <div class="form-group">
                         <label>Teléfono</label>
-                        <input type="text" name="telefono" class="form-control">
+                        <input type="text" name="telefono" class="form-control" oninput="App.soloNumeros(event)">
                     </div>
                     <div class="form-group">
                         <label>Dirección</label>
@@ -202,7 +207,7 @@ const App = {
                 </div>
                 <div class="form-group">
                     <label>Teléfono</label>
-                    <input type="text" name="telefono" class="form-control" value="${cliente.telefono || ''}">
+                    <input type="text" name="telefono" class="form-control" value="${cliente.telefono || ''}" oninput="App.soloNumeros(event)">
                 </div>
                 <div class="form-group">
                     <label>Dirección</label>
@@ -288,7 +293,7 @@ const App = {
                     <input type="text" name="nombreCompleto" id="input-contacto-nombre" placeholder="Nombre del Contacto" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="telefono" id="input-contacto-telefono" placeholder="Número de Teléfono" class="form-control">
+                    <input type="text" name="telefono" id="input-contacto-telefono" placeholder="Número de Teléfono" class="form-control" oninput="App.soloNumeros(event)">
                 </div>
                 <div class="form-group">
                     <input type="text" name="direccion" id="input-contacto-direccion" placeholder="Dirección Postal" class="form-control">
