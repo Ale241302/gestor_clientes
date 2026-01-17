@@ -209,13 +209,18 @@ body {
 }
 
 .btn-danger {
-    background: var(--danger-color);
+    background: #ef4444;
     border: none;
     color: white;
-    padding: 1vh 2vw;
+    padding: 1.5vh 3vw;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
 }
 
 /* Modal */
