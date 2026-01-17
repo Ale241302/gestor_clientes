@@ -139,3 +139,4 @@ C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\obj\Debug\net8.0\refi
 C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\obj\Debug\net8.0\api_back.pdb
 C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\obj\Debug\net8.0\api_back.genruntimeconfig.cache
 C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\obj\Debug\net8.0\ref\api_back.dll
+C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\bin\Debug\net8.0\appsettings.Production.json
