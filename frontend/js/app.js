@@ -5,6 +5,66 @@ const App = {
         filtro: { nombre: '', telefono: '' }
     },
 
+    Modal: {
+        show(title, message, type = 'info', onConfirm = null) {
+            const modal = document.getElementById('generic-modal');
+            const titleEl = document.getElementById('generic-modal-title');
+            const msgEl = document.getElementById('generic-modal-message');
+            const actionsEl = document.getElementById('generic-modal-actions');
+
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+            actionsEl.innerHTML = '';
+
+            if (type === 'confirm') {
+                const cancelBtn = document.createElement('button');
+                cancelBtn.className = 'btn-secondary';
+                cancelBtn.textContent = 'Cancelar';
+                cancelBtn.onclick = () => this.close();
+
+                const confirmBtn = document.createElement('button');
+                confirmBtn.className = 'btn-danger';
+                confirmBtn.textContent = 'Confirmar';
+                confirmBtn.onclick = () => {
+                    this.close();
+                    if (onConfirm) onConfirm();
+                };
+
+                actionsEl.appendChild(cancelBtn);
+                actionsEl.appendChild(confirmBtn);
+            } else {
+                const okBtn = document.createElement('button');
+                okBtn.className = 'btn-primary';
+                okBtn.style.width = 'auto'; // Override full width
+                okBtn.textContent = 'Aceptar';
+                okBtn.onclick = () => this.close();
+                actionsEl.appendChild(okBtn);
+            }
+
+            modal.classList.remove('hidden');
+        },
+
+        close() {
+            document.getElementById('generic-modal').classList.add('hidden');
+        },
+
+        alert(message) {
+            this.show('Atención', message, 'info');
+        },
+
+        success(message) {
+            this.show('Éxito', message, 'info');
+        },
+
+        error(message) {
+            this.show('Error', message, 'info');
+        },
+
+        confirm(message, onConfirm) {
+            this.show('Confirmación', message, 'confirm', onConfirm);
+        }
+    },
+
     async init() {
         console.log('App iniciada');
         this.render();
@@ -17,7 +77,7 @@ const App = {
             this.state.clientes = clientes;
             this.render();
         } catch (error) {
-            alert('Error al cargar clientes');
+            this.Modal.error('Error al cargar clientes');
         }
     },
 
@@ -117,22 +177,23 @@ const App = {
 
         try {
             await API.post('clientes', data);
-            alert('Cliente guardado!');
+            this.Modal.success('Cliente guardado!');
             this.navegar('clientes');
             this.cargarClientes();
         } catch (e) {
-            alert('Error al guardar');
+            this.Modal.error('Error al guardar');
         }
     },
 
     async eliminarCliente(id) {
-        if (!confirm('¿Estás seguro? Se eliminarán también los contactos.')) return;
-        try {
-            await API.delete(`clientes/${id}`);
-            this.cargarClientes();
-        } catch (e) {
-            alert('Error al eliminar');
-        }
+        this.Modal.confirm('¿Estás seguro? Se eliminarán también los contactos.', async () => {
+            try {
+                await API.delete(`clientes/${id}`);
+                this.cargarClientes();
+            } catch (e) {
+                this.Modal.error('Error al eliminar');
+            }
+        });
     },
 
     async verContactos(clienteId) {
@@ -141,7 +202,7 @@ const App = {
             const contactos = await API.get(`contactos/cliente/${clienteId}`);
             this.mostrarModalContactos(clienteId, contactos);
         } catch (e) {
-            alert('Error al cargar contactos');
+            this.Modal.error('Error al cargar contactos');
         }
     },
 
@@ -200,18 +261,19 @@ const App = {
             // Reload contacts in modal
             this.verContactos(clienteId);
         } catch (e) {
-            alert('Error al agregar contacto');
+            this.Modal.error('Error al agregar contacto');
         }
     },
 
     async eliminarContacto(id, clienteId) {
-        if (!confirm('¿Eliminar contacto?')) return;
-        try {
-            await API.delete(`contactos/${id}`);
-            this.verContactos(clienteId);
-        } catch (e) {
-            alert('Error');
-        }
+        this.Modal.confirm('¿Eliminar contacto?', async () => {
+            try {
+                await API.delete(`contactos/${id}`);
+                this.verContactos(clienteId);
+            } catch (e) {
+                this.Modal.error('Error');
+            }
+        });
     }
 };
 
