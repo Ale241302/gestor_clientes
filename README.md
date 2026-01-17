@@ -17,6 +17,12 @@ Aplicación web completa para la gestión de clientes y contactos, desarrollada 
 ### 1. Base de Datos
 1.  Asegúrate de tener SQL Server (o LocalDB) instalado.
 2.  Ejecuta el script `SQL/setup.sql` para crear las tablas necesarias.
+     ```json
+    "sqlcmd -S "(localdb)\mssqllocaldb" -Q "CREATE DATABASE GestorClientesDB""
+    ```
+     ```json
+    "sqlcmd -S "(localdb)\mssqllocaldb" -d GestorClientesDB -i setup.sql"
+    ```
 3.  Verifica la cadena de conexión en `api_back/appsettings.json`. Por defecto usa LocalDB:
     ```json
     "Server=(localdb)\\mssqllocaldb;Database=GestorClientesDB;Trusted_Connection=True;..."
