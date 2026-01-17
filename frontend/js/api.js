@@ -1,4 +1,6 @@
-const BASE_URL = 'http://localhost:5135/api'; // Ajustar puerto según configuración
+const BASE_URL = import.meta.env.VITE_API_URL ||
+    process.env.REACT_APP_API_URL ||
+    'http://localhost:5135/api';
 
 const API = {
     async get(endpoint) {
