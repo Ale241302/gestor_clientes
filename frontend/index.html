@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.png">
     <title>Gestor de Clientes Premium</title>
 
     <!-- Fonts & Icons -->
@@ -67,6 +68,23 @@
                 <!-- Buttons injected by JS -->
             </div>
         </div>
+    </div>
+
+    <!-- Mobile FAB -->
+    <div class="fab-container mobile-only">
+        <div class="fab-menu hidden" id="fab-menu">
+            <button onclick="App.navegar('nuevo-cliente'); App.toggleFab()" class="fab-item">
+                <span>Nuevo Cliente</span>
+                <div class="fab-mini-icon"><i class="fa-solid fa-user-plus"></i></div>
+            </button>
+            <button onclick="App.navegar('clientes'); App.toggleFab()" class="fab-item">
+                <span>Clientes</span>
+                <div class="fab-mini-icon"><i class="fa-solid fa-user-group"></i></div>
+            </button>
+        </div>
+        <button class="fab-main" onclick="App.toggleFab()">
+            <i class="fa-solid fa-plus" id="fab-icon"></i>
+        </button>
     </div>
 
     <!-- Scripts -->

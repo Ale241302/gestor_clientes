@@ -380,6 +380,23 @@ const App = {
                 this.Modal.error('Error');
             }
         });
+    },
+
+    toggleFab() {
+        const menu = document.getElementById('fab-menu');
+        const icon = document.getElementById('fab-icon');
+        menu.classList.toggle('hidden');
+
+        if (menu.classList.contains('hidden')) {
+            icon.classList.remove('fa-xmark');
+            icon.classList.add('fa-plus');
+            icon.style.transform = 'rotate(0deg)';
+        } else {
+            icon.classList.remove('fa-plus');
+            icon.classList.add('fa-xmark');
+            // Or just rotate the plus
+            icon.style.transform = 'rotate(135deg)';
+        }
     }
 };
 
