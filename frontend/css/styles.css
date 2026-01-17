@@ -10,12 +10,14 @@
     --glass-bg: rgba(30, 41, 59, 0.7);
     --glass-border: rgba(255, 255, 255, 0.1);
     --radius: 16px;
+    --main-content-bg: radial-gradient(circle at top right, #1e1b4b, transparent 40%);
     --shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="light"] {
     --bg-dark: #f1f5f9;
     --bg-card: #ffffff;
+    --main-content-bg: none;
     --text-main: #0f172a;
     --text-muted: #64748b;
     --glass-bg: rgba(255, 255, 255, 0.7);
@@ -95,7 +97,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    background: radial-gradient(circle at top right, #1e1b4b, transparent 40%);
+    background: var(--main-content-bg);
 }
 
 .top-bar {
@@ -438,6 +440,7 @@ body {
         /* Show FAB on mobile */
     }
 }
+
 .user-profile {
     display: flex;
     align-items: center;
