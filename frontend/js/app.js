@@ -70,6 +70,11 @@ const App = {
         event.target.value = event.target.value.replace(/[^0-9]/g, '');
     },
 
+    soloLetras(event) {
+        // Permitir solo letras (incluyendo acentos y ñ) y espacios
+        event.target.value = event.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    },
+
     async init() {
         console.log('App iniciada');
         this.render();
@@ -138,7 +143,7 @@ const App = {
                 <form onsubmit="App.guardarCliente(event)">
                     <div class="form-group">
                         <label>Nombre Completo</label>
-                        <input type="text" name="nombreCompleto" class="form-control" required>
+                        <input type="text" name="nombreCompleto" class="form-control" oninput="App.soloLetras(event)" required>
                     </div>
                     <div class="form-group">
                         <label>Teléfono</label>
@@ -202,7 +207,7 @@ const App = {
             <form onsubmit="App.actualizarCliente(event, ${cliente.id})">
                 <div class="form-group">
                     <label>Nombre Completo</label>
-                    <input type="text" name="nombreCompleto" class="form-control" value="${cliente.nombreCompleto}" required>
+                    <input type="text" name="nombreCompleto" class="form-control" value="${cliente.nombreCompleto}" oninput="App.soloLetras(event)" required>
                 </div>
                 <div class="form-group">
                     <label>Teléfono</label>
@@ -289,7 +294,7 @@ const App = {
             <form id="form-contacto" onsubmit="App.procesarContacto(event, ${clienteId})">
                 <input type="hidden" name="id" id="input-contacto-id" value="">
                 <div class="form-group">
-                    <input type="text" name="nombreCompleto" id="input-contacto-nombre" placeholder="Nombre del Contacto" class="form-control" required>
+                    <input type="text" name="nombreCompleto" id="input-contacto-nombre" placeholder="Nombre del Contacto" class="form-control" oninput="App.soloLetras(event)" required>
                 </div>
                 <div class="form-group">
                     <input type="text" name="telefono" id="input-contacto-telefono" placeholder="Número de Teléfono" class="form-control" oninput="App.soloNumeros(event)">
