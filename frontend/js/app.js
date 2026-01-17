@@ -157,8 +157,6 @@ const App = {
     },
 
     renderClientesView() {
-        const hayClientes = this.state.clientesFiltrados.length > 0;
-
         return `
             <div class="search-bar" style="margin-bottom: 2rem; display: flex; gap: 1rem; align-items: center;">
                 <input type="text" id="busqueda-nombre" placeholder="Buscar por nombre..." class="form-control" value="${this.state.filtro.nombre}">
@@ -170,6 +168,16 @@ const App = {
                     <option value="telefono-desc" ${this.state.ordenamiento === 'telefono-desc' ? 'selected' : ''}>Teléfono Descendente</option>
                 </select>
             </div>
+            <div id="clientes-resultado-container">
+                ${this.renderListaClientes()}
+            </div>
+        `;
+    },
+
+    renderListaClientes() {
+        const hayClientes = this.state.clientesFiltrados.length > 0;
+
+        return `
             <p style="color: var(--text-muted); margin-bottom: 1.5rem;">${this.state.clientesFiltrados.length} cliente(s) encontrado(s)</p>
             ${hayClientes ? `
                 <div class="grid-container">
@@ -287,11 +295,10 @@ const App = {
     },
 
     actualizarVista() {
-        // Solo actualizar la vista sin recargar todo
-        const contentArea = document.getElementById('content-area');
-        if (this.state.view === 'clientes') {
-            contentArea.innerHTML = this.renderClientesView();
-            this.setupBusqueda();
+        // Solo actualizar la lista de clientes, sin tocar los inputs
+        const resultadoContainer = document.getElementById('clientes-resultado-container');
+        if (this.state.view === 'clientes' && resultadoContainer) {
+            resultadoContainer.innerHTML = this.renderListaClientes();
         }
     },
 
