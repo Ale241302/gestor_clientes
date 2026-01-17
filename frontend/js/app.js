@@ -274,8 +274,8 @@ const App = {
                             <small style="color: var(--text-muted);">${c.telefono || 'Sin teléfono'}</small>
                         </div>
                         <div style="display: flex; gap: 0.5rem;">
-                            <button onclick="App.prepararEdicionContacto(${c.id}, ${clienteId})" style="background:none; border:none; color: var(--primary-color); cursor: pointer; font-size: 1.1rem;" title="Editar"><i class="fa-solid fa-pencil"></i></button>
-                            <button onclick="App.eliminarContacto(${c.id}, ${clienteId})" style="background:none; border:none; color: var(--danger-color); cursor: pointer; font-size: 1.1rem;" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="App.prepararEdicionContacto(${c.id}, ${clienteId})" style="background:none; border:none; color: #10b981 !important; cursor: pointer; font-size: 1.1rem;" title="Editar"><i class="fa-solid fa-pencil"></i></button>
+                            <button onclick="App.eliminarContacto(${c.id}, ${clienteId})" style="background:none; border:none; color: #ef4444 !important; cursor: pointer; font-size: 1.1rem;" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 `).join('') : '<p style="text-align: center; color: var(--text-muted);">No hay contactos registrados.</p>'}
@@ -293,9 +293,9 @@ const App = {
                 <div class="form-group">
                     <input type="text" name="direccion" id="input-contacto-direccion" placeholder="Dirección Postal" class="form-control">
                 </div>
-                <div style="display: flex; gap: 1rem;">
-                    <button type="submit" id="btn-submit-contacto" class="btn-primary" style="margin-top: 0;">Agregar Contacto</button>
-                    <button type="button" id="btn-cancelar-edicion" class="btn-secondary" style="margin-top: 0; display: none;" onclick="App.cancelarEdicionContacto(${clienteId})">Cancelar</button>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem; align-items: stretch;">
+                    <button type="submit" id="btn-submit-contacto" class="btn-primary" style="margin-top: 0; flex: 2; height: 50px;">Agregar Contacto</button>
+                    <button type="button" id="btn-cancelar-edicion" class="btn-danger" style="margin-top: 0; flex: 1; display: none; height: 50px; font-weight: 600; font-size: 1rem; padding: 0;" onclick="App.cancelarEdicionContacto(${clienteId})">Cancelar</button>
                 </div>
             </form>
         `;
