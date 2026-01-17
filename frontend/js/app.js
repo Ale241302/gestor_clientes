@@ -36,7 +36,6 @@ const App = {
             } else {
                 const okBtn = document.createElement('button');
                 okBtn.className = 'btn-primary';
-                okBtn.style.width = 'auto'; // Override full width
                 okBtn.textContent = 'Aceptar';
                 okBtn.onclick = () => this.close();
                 actionsEl.appendChild(okBtn);
