@@ -75,6 +75,11 @@ const App = {
         event.target.value = event.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
     },
 
+    soloDireccion(event) {
+        // Permitir letras, números, espacios, # y -
+        event.target.value = event.target.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s#\-]/g, '');
+    },
+
     async init() {
         console.log('App iniciada');
         this.render();
@@ -151,7 +156,7 @@ const App = {
                     </div>
                     <div class="form-group">
                         <label>Dirección</label>
-                        <input type="text" name="direccion" class="form-control">
+                        <input type="text" name="direccion" class="form-control" oninput="App.soloDireccion(event)">
                     </div>
                     <button type="submit" class="btn-primary">Guardar Cliente</button>
                 </form>
@@ -215,7 +220,7 @@ const App = {
                 </div>
                 <div class="form-group">
                     <label>Dirección</label>
-                    <input type="text" name="direccion" class="form-control" value="${cliente.direccion || ''}">
+                    <input type="text" name="direccion" class="form-control" value="${cliente.direccion || ''}" oninput="App.soloDireccion(event)">
                 </div>
                 <button type="submit" class="btn-primary">Actualizar Cliente</button>
             </form>
@@ -300,7 +305,7 @@ const App = {
                     <input type="text" name="telefono" id="input-contacto-telefono" placeholder="Número de Teléfono" class="form-control" oninput="App.soloNumeros(event)">
                 </div>
                 <div class="form-group">
-                    <input type="text" name="direccion" id="input-contacto-direccion" placeholder="Dirección Postal" class="form-control">
+                    <input type="text" name="direccion" id="input-contacto-direccion" placeholder="Dirección Postal" class="form-control" oninput="App.soloDireccion(event)">
                 </div>
                 <div style="display: flex; gap: 1rem; margin-top: 1rem; align-items: stretch;">
                     <button type="submit" id="btn-submit-contacto" class="btn-primary" style="margin-top: 0; flex: 2; height: 50px;">Agregar Contacto</button>
