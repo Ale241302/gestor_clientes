@@ -163,6 +163,10 @@ body {
     color: white;
 }
 
+[data-theme="light"] .card-actions button:hover {
+    color: var(--primary-color);
+}
+
 .delete-btn:hover {
     color: #ef4444 !important;
 }
@@ -178,6 +182,10 @@ body {
     color: var(--text-muted);
 }
 
+[data-theme="light"] .form-group label {
+    color: #000000;
+}
+
 .form-control {
     width: 100%;
     padding: 1.5vh;
@@ -186,6 +194,12 @@ body {
     border-radius: 8px;
     color: white;
     font-size: 1rem;
+}
+
+[data-theme="light"] .form-control {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.2);
+    color: #000000;
 }
 
 .form-control:focus {
@@ -219,6 +233,12 @@ body {
 .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.1);
     color: white;
+}
+
+[data-theme="light"] .btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #334155;
+    border-color: #334155;
 }
 
 .btn-danger {
