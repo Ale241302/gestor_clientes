@@ -1,6 +1,6 @@
 const BASE_URL = window.location.hostname === 'localhost'
     ? 'http://localhost:5135/api'
-    : 'https://gestor-clientes-api.onrender.com';
+    : 'https://gestor-clientes-api.onrender.com/api';
 
 const API = {
     async get(endpoint) {
