@@ -1,0 +1,9 @@
+C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\obj\Debug\net10.0\api_back.csproj.AssemblyReference.cache
+C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\obj\Debug\net10.0\api_back.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\obj\Debug\net10.0\api_back.AssemblyInfoInputs.cache
+C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\obj\Debug\net10.0\api_back.AssemblyInfo.cs
+C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\obj\Debug\net10.0\api_back.csproj.CoreCompileInputs.cache
+C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\obj\Debug\net10.0\api_back.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\obj\Debug\net10.0\api_back.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\ale13\OneDrive\Documents\gestor_clientes\api_back\obj\Debug\net10.0\api_back.sourcelink.json
