@@ -1,6 +1,6 @@
 const BASE_URL = window.location.hostname === 'localhost'
     ? 'http://localhost:5135/api'
-    : 'https://alegestor-api.azurewebsites.net/api';
+    : 'https://alegestor-api-cjgac6b0b2bjhsb0.westus3-01.azurewebsites.net/api';
 
 const API = {
     async get(endpoint) {
